@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DMTØR FX</title>
-<meta name="description" content="Every effect in the DMTØR lib, from NOEMA, Speak & Grain and RUPTURE: what it does and what you can turn.">
+<meta name="description" content="Every effect and engine in the DMTØR lib, from NOEMA, Speak & Grain and RUPTURE: what it does and what you can turn.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -171,10 +171,10 @@ footer p { margin: 0 0 6px; max-width: 760px; }
   <div class="wrap">
     <p class="eyebrow">DMTØR lib</p>
     <h1>FX</h1>
-    <p class="lede">Every effect in the lib, <b>27 of them</b>: what each one does and what you can turn.
+    <p class="lede">Every effect and engine in the lib, <b>33 of them</b>: what each one does and what you can turn.
       They come from <b>NOEMA</b> (the Bliss and Noise editions), <b>Speak &amp; Grain</b> and <b>RUPTURE</b>, and
       they're all plain C++17 that runs on a phone or a Daisy Seed.</p>
-    <ul class="legend"><li><span class="kind">Send</span> Takes the send and returns only the wet signal; mix it back in.</li><li><span class="kind">In place</span> Replaces the sound with the processed sound.</li><li><span class="kind">Chain</span> Several of the other effects in a fixed order.</li></ul>
+    <ul class="legend"><li><span class="kind">Send</span> Takes the send and returns only the wet signal; mix it back in.</li><li><span class="kind">In place</span> Replaces the sound with the processed sound.</li><li><span class="kind">Chain</span> Several of the other effects in a fixed order.</li><li><span class="kind">Buffer</span> Plays back a recording, or the last few seconds of live input, rather than the sound as it arrives.</li><li><span class="kind">Engine</span> Makes its own sound; you steer it.</li></ul>
   </div>
 </div>
 
@@ -184,7 +184,7 @@ footer p { margin: 0 0 6px; max-width: 760px; }
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       <input type="search" id="q" placeholder="Search: shimmer, tape, freeze…" aria-label="Search the effects" autocomplete="off">
     </label>
-    <div class="chips" role="group" aria-label="Kind of effect"><button class="chip" data-cat="space" aria-pressed="false">Space and time</button><button class="chip" data-cat="glitch" aria-pressed="false">Glitch and pitch</button><button class="chip" data-cat="colour" aria-pressed="false">Colour and distortion</button><button class="chip" data-cat="dynamics" aria-pressed="false">Dynamics</button></div>
+    <div class="chips" role="group" aria-label="Kind of effect"><button class="chip" data-cat="space" aria-pressed="false">Space and time</button><button class="chip" data-cat="granular" aria-pressed="false">Granular</button><button class="chip" data-cat="glitch" aria-pressed="false">Glitch and pitch</button><button class="chip" data-cat="colour" aria-pressed="false">Colour and distortion</button><button class="chip" data-cat="dynamics" aria-pressed="false">Dynamics</button><button class="chip" data-cat="engines" aria-pressed="false">Engines</button></div>
     <div class="chips" role="group" aria-label="Where it comes from"><button class="chip chip-src src-bliss" data-src="bliss" aria-pressed="false">NOEMA Bliss</button><button class="chip chip-src src-noise" data-src="noise" aria-pressed="false">NOEMA Noise</button><button class="chip chip-src src-sg" data-src="sg" aria-pressed="false">Speak &amp; Grain</button><button class="chip chip-src src-rupture" data-src="rupture" aria-pressed="false">RUPTURE</button></div>
     <span class="shown" id="shown" aria-live="polite"></span>
   </div>
@@ -192,7 +192,7 @@ footer p { margin: 0 0 6px; max-width: 760px; }
 
 <main class="wrap">
 <section class="cat" id="space" data-cat="space">
-  <div class="cat-head"><h2>Space and time <span class="count" data-total="11">11</span></h2><p>Reverbs, delays, resonators and clouds: they add room, repeats and memory.</p></div>
+  <div class="cat-head"><h2>Space and time <span class="count" data-total="10">10</span></h2><p>Reverbs, delays, resonators and clouds: they add room, repeats and memory.</p></div>
   <div class="grid">
 <article class="fx" data-src="rupture" data-search="space rupture::space the big reverb. four structures built from chaosverb&#x27;s reverb, a pre-delay of up to 2.5 s with its own feedback so it echoes into the wash, and an element after the tail. shimmer, gate, freeze and chaos sit on top, and the tail can duck under what you play. it follows a clock, and changing structure crossfades. rupture structure ultra, cathedral, prism or gravity decay  tone dark to bright pre-delay 0 to 2.5 s pre-delay feedback up to 70 % element the shimmer&#x27;s interval, or an effect after the tail shimmer the tail pitched and fed back gate a tempo gate on the tail freeze the tail holds forever chaos rhythmic gating and frozen stabs duck the tail dips under the dry signal ultra a plate (dattorro&#x27;s tank): dense, moody, toward endless cathedral a large 8-line hall with slow, deep modulation prism two halls, one per side, pitched −12 on the left and +7 on the right gravity the hall played backwards through a window, so the tail swells toward the next hit shimmer +12, +7, −12 the interval the shimmer moves by chorus two slow voices vibrato in eighth notes vowel formant filters through a, e, i, o, u tremolo in eighth notes lo-fi tape wow, then bits and rate lost">
   <header>
@@ -304,6 +304,11 @@ footer p { margin: 0 0 6px; max-width: 760px; }
   
   <code class="where">noema::noise::Interference · audio/fx/noema-noise/Interference.h</code>
 </article>
+  </div>
+</section>
+<section class="cat" id="granular" data-cat="granular">
+  <div class="cat-head"><h2>Granular <span class="count" data-total="2">2</span></h2><p>They cut sound into short grains and scatter them back: clouds, smears and frozen textures.</p></div>
+  <div class="grid">
 <article class="fx" data-src="bliss" data-search="cloud noema::cloud a granular cloud. it sprays the last few seconds back as soft grains: delayed, scattered, pitched up, sometimes reversed. freeze holds its memory. echo&#x27;s granulize element is this cloud. noema bliss density about 1.5 to 60 grains a second size about 20 ms to 1.6 s scatter up to about 3.5 s back pitch how high grains climb up chance  reverse  spread  sweep  freeze ">
   <header>
     <h3>Cloud</h3>
@@ -314,6 +319,17 @@ footer p { margin: 0 0 6px; max-width: 760px; }
   <h4>Controls</h4><ul class="controls"><li><b>Density</b> <span>about 1.5 to 60 grains a second</span></li><li><b>Size</b> <span>about 20 ms to 1.6 s</span></li><li><b>Scatter</b> <span>up to about 3.5 s back</span></li><li><b>Pitch</b> <span>how high grains climb</span></li><li><b>Up chance</b></li><li><b>Reverse</b></li><li><b>Spread</b></li><li><b>Sweep</b></li><li><b>Freeze</b></li></ul>
   
   <code class="where">noema::Cloud · audio/fx/noema-bliss/Cloud.h</code>
+</article>
+<article class="fx" data-src="sg" data-search="grain engine speakgrain::grainengine speak &amp; grain&#x27;s granular engine. it plays a recording, or the last few seconds of live input, as clouds of short, smoothly windowed grains: up to five clouds at once, one per finger, each around its own place in the sound at its own pitch. grains can play backwards and spread across the stereo field, positions glide, and it never clicks. it reports every grain so a screen can draw it. the whole app, with its glitch, delay, reverb and dry/wet, is the lib&#x27;s examples/speakgrain/instrument. speak &amp; grain grain size the length of each grain, in ms density grains a second, per cloud spray random scatter around the position reverse the chance a grain plays backwards stereo spread mono to full left and right position per cloud: where in the sound, gliding or jumping pitch per cloud, in semitones own size, density, spray per cloud, so a finger can set its own source a recorded take, or a live buffer that can freeze">
+  <header>
+    <h3>Grain Engine</h3>
+    <span class="kind" title="Plays back a recording, or the last few seconds of live input, rather than the sound as it arrives.">Buffer</span>
+  </header>
+  <div class="tags"><span class="src src-sg">Speak &amp; Grain</span><span class="src-note">the heart of Speak &amp; Grain</span></div>
+  <p class="desc">Speak &amp; Grain&#x27;s granular engine. It plays a recording, or the last few seconds of live input, as clouds of short, smoothly windowed grains: up to five clouds at once, one per finger, each around its own place in the sound at its own pitch. Grains can play backwards and spread across the stereo field, positions glide, and it never clicks. It reports every grain so a screen can draw it. The whole app, with its glitch, delay, reverb and dry/wet, is the lib&#x27;s examples/speakgrain/Instrument.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Grain size</b> <span>the length of each grain, in ms</span></li><li><b>Density</b> <span>grains a second, per cloud</span></li><li><b>Spray</b> <span>random scatter around the position</span></li><li><b>Reverse</b> <span>the chance a grain plays backwards</span></li><li><b>Stereo spread</b> <span>mono to full left and right</span></li><li><b>Position</b> <span>per cloud: where in the sound, gliding or jumping</span></li><li><b>Pitch</b> <span>per cloud, in semitones</span></li><li><b>Own size, density, spray</b> <span>per cloud, so a finger can set its own</span></li><li><b>Source</b> <span>a recorded take, or a live buffer that can freeze</span></li></ul>
+  
+  <code class="where">speakgrain::GrainEngine · audio/synths/speakgrain/GrainEngine.h</code>
 </article>
   </div>
 </section>
@@ -508,12 +524,72 @@ footer p { margin: 0 0 6px; max-width: 760px; }
 </article>
   </div>
 </section>
+<section class="cat" id="engines" data-cat="engines">
+  <div class="cat-head"><h2>Engines <span class="count" data-total="5">5</span></h2><p>They make their own sound and play themselves: a few controls steer them.</p></div>
+  <div class="grid">
+<article class="fx" data-src="bliss noise" data-search="organism (alloy) noema::organism a generative melody player. it grows short motifs, remembers and transforms them, rests between phrases and runs up to three interlocking players, in any scale. it plays the lib&#x27;s instruments: analog, harp and glass in bliss; bowed strings and metal in noise. noema bliss noema noise activity sparse to busy, with more players evolution how much motifs change memory how often old motifs return harmony the pull toward the chord variation  tone  register  chaos  light  space stereo spread instrument which voice plays transpose  beat locks to a clock, or free poke asks for an extra note">
+  <header>
+    <h3>Organism (ALLOY)</h3>
+    <span class="kind" title="Makes its own sound; you steer it.">Engine</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A generative melody player. It grows short motifs, remembers and transforms them, rests between phrases and runs up to three interlocking players, in any scale. It plays the lib&#x27;s instruments: Analog, Harp and Glass in Bliss; Bowed strings and Metal in Noise.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Activity</b> <span>sparse to busy, with more players</span></li><li><b>Evolution</b> <span>how much motifs change</span></li><li><b>Memory</b> <span>how often old motifs return</span></li><li><b>Harmony</b> <span>the pull toward the chord</span></li><li><b>Variation</b></li><li><b>Tone</b></li><li><b>Register</b></li><li><b>Chaos</b></li><li><b>Light</b></li><li><b>Space</b> <span>stereo spread</span></li><li><b>Instrument</b> <span>which voice plays</span></li><li><b>Transpose</b></li><li><b>Beat</b> <span>locks to a clock, or free</span></li><li><b>Poke</b> <span>asks for an extra note</span></li></ul>
+  
+  <code class="where">noema::Organism · audio/synths/noema-bliss/Organism.h</code>
+</article>
+<article class="fx" data-src="bliss noise" data-search="beats noema::beats a drum machine that writes its own patterns from weighted genres and plays the lib&#x27;s synthesized drums (kick, snare, hat, perc, stab), plus synthesized breaks sliced to tempo. mash pads, beat effects and a sidechain envelope for ducking the rest of the mix are built in. the noise edition is voiced dark. noema bliss noema noise genre  bpm  swing  level  chop  drive  evolve  energy  xy which part leads mash pads rolls, half-time, reverse, stutter, drop beat fx repeat, tape stop, gate, filter, reverse, over the whole mix duck a sidechain envelope out">
+  <header>
+    <h3>Beats</h3>
+    <span class="kind" title="Makes its own sound; you steer it.">Engine</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A drum machine that writes its own patterns from weighted genres and plays the lib&#x27;s synthesized drums (kick, snare, hat, perc, stab), plus synthesized breaks sliced to tempo. Mash pads, beat effects and a sidechain envelope for ducking the rest of the mix are built in. The Noise edition is voiced dark.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Genre</b></li><li><b>BPM</b></li><li><b>Swing</b></li><li><b>Level</b></li><li><b>Chop</b></li><li><b>Drive</b></li><li><b>Evolve</b></li><li><b>Energy</b></li><li><b>XY</b> <span>which part leads</span></li><li><b>Mash pads</b> <span>rolls, half-time, reverse, stutter, drop</span></li><li><b>Beat FX</b> <span>repeat, tape stop, gate, filter, reverse, over the whole mix</span></li><li><b>Duck</b> <span>a sidechain envelope out</span></li></ul>
+  
+  <code class="where">noema::Beats · audio/synths/noema-bliss/Beats.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="vox noema::vox a breathy female choir: a glottal pulse through five formants. its vowels morph with an xy position, or it sings a typed word as a canon. noema bliss vowel oo to ee shade  depth  breath  choir 1 to 4 voices pace  chaos  evolve  pitches a note per voice word typed; empty sings vowels">
+  <header>
+    <h3>Vox</h3>
+    <span class="kind" title="Makes its own sound; you steer it.">Engine</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A breathy female choir: a glottal pulse through five formants. Its vowels morph with an XY position, or it sings a typed word as a canon.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Vowel</b> <span>OO to EE</span></li><li><b>Shade</b></li><li><b>Depth</b></li><li><b>Breath</b></li><li><b>Choir</b> <span>1 to 4 voices</span></li><li><b>Pace</b></li><li><b>Chaos</b></li><li><b>Evolve</b></li><li><b>Pitches</b> <span>a note per voice</span></li><li><b>Word</b> <span>typed; empty sings vowels</span></li></ul>
+  
+  <code class="where">noema::Vox · audio/synths/noema-bliss/Vox.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="vox noema::noise::vox a deep, dark bass-voice choir with growl (period doubling), vocal fry and jitter. noema noise vowel  growl  breath  choir 1 to 4 voices pace  chaos  evolve  pitches  word ">
+  <header>
+    <h3>Vox</h3>
+    <span class="kind" title="Makes its own sound; you steer it.">Engine</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A deep, dark bass-voice choir with growl (period doubling), vocal fry and jitter.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Vowel</b></li><li><b>Growl</b></li><li><b>Breath</b></li><li><b>Choir</b> <span>1 to 4 voices</span></li><li><b>Pace</b></li><li><b>Chaos</b></li><li><b>Evolve</b></li><li><b>Pitches</b></li><li><b>Word</b></li></ul>
+  
+  <code class="where">noema::noise::Vox · audio/synths/noema-noise/Vox.h</code>
+</article>
+<article class="fx" data-src="bliss noise" data-search="fracture noema::fracture a shift-register noise machine clocked from slow sub-audio pulses up to audio-rate noise: tonal loops that corrupt into static. it also puts out a slow modulation signal. noema bliss noema noise clock 0.25 hz to 3 khz pattern tonal loops to noise corruption  fold  gate sustained, bursts or impulses freeze  mode ">
+  <header>
+    <h3>Fracture</h3>
+    <span class="kind" title="Makes its own sound; you steer it.">Engine</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A shift-register noise machine clocked from slow sub-audio pulses up to audio-rate noise: tonal loops that corrupt into static. It also puts out a slow modulation signal.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Clock</b> <span>0.25 Hz to 3 kHz</span></li><li><b>Pattern</b> <span>tonal loops to noise</span></li><li><b>Corruption</b></li><li><b>Fold</b></li><li><b>Gate</b> <span>sustained, bursts or impulses</span></li><li><b>Freeze</b></li><li><b>Mode</b></li></ul>
+  
+  <code class="where">noema::Fracture · audio/synths/noema-bliss/Fracture.h</code>
+</article>
+  </div>
+</section>
 <p class="empty" id="empty">No effect matches that. <button class="theme" id="reset">Clear the filters</button></p>
 </main>
 
 <footer>
   <div class="wrap">
-    <p>Each effect is a C++ class in <a href="https://github.com/DMTOR-DSP/dmtor-lib">DMTOR-DSP/dmtor-lib</a> (private),
+    <p>Each one is a C++ class in <a href="https://github.com/DMTOR-DSP/dmtor-lib">DMTOR-DSP/dmtor-lib</a> (private),
       named at the bottom of its card. The lib's README has the exact calls and ranges, and notes on running them on a Daisy.</p>
     <p><button class="theme" id="theme">Switch to <span id="theme-name">dark</span></button></p>
   </div>
@@ -546,7 +622,7 @@ footer p { margin: 0 0 6px; max-width: 760px; }
       s.querySelector('.count').textContent = n;
       total += n;
     });
-    shown.textContent = total === cards.length ? cards.length + ' effects' : total + ' of ' + cards.length;
+    shown.textContent = total === cards.length ? cards.length + ' in all' : total + ' of ' + cards.length;
     empty.classList.toggle('on', total === 0);
   }
   function toggle(chips, chip, key) {
