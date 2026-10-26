@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DMTØR FX</title>
+<meta name="description" content="Every effect in the DMTØR lib, from NOEMA, Speak & Grain and RUPTURE: what it does and what you can turn.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface-2: #efede7;
+  --border: #dfdcd3;
+  --text: #17171a;
+  --muted: #5d5c63;
+  --faint: #8a8890;
+  --focus: #17171a;
+  --bliss: #6b3fd0;
+  --noise: #c0392b;
+  --sg: #0b8466;
+  --rupture: #9a6200;
+  --shadow: 0 1px 2px rgba(20, 20, 20, .05);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0e10;
+    --surface: #161619;
+    --surface-2: #1d1d21;
+    --border: #2b2b31;
+    --text: #ececef;
+    --muted: #a3a2ab;
+    --faint: #75747d;
+    --focus: #ececef;
+    --bliss: #b99cff;
+    --noise: #ff8170;
+    --sg: #4fd2ac;
+    --rupture: #f1b545;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e0e10;
+  --surface: #161619;
+  --surface-2: #1d1d21;
+  --border: #2b2b31;
+  --text: #ececef;
+  --muted: #a3a2ab;
+  --faint: #75747d;
+  --focus: #ececef;
+  --bliss: #b99cff;
+  --noise: #ff8170;
+  --sg: #4fd2ac;
+  --rupture: #f1b545;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+code, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+a { color: inherit; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 16px; }
+
+/* Masthead */
+.top { padding: 56px 0 28px; border-bottom: 1px solid var(--border); }
+.eyebrow { font: 500 12px/1 "JetBrains Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; }
+h1 { font-size: clamp(40px, 7vw, 72px); line-height: .95; letter-spacing: -.03em; margin: 0 0 18px; font-weight: 700; }
+.lede { max-width: 660px; font-size: 17px; color: var(--muted); margin: 0; }
+.lede b { color: var(--text); font-weight: 600; }
+.legend { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--muted); font-size: 13.5px; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+
+/* Filters */
+.filters { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.filters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-top: 12px; padding-bottom: 12px; }
+.search { flex: 1 1 220px; min-width: 0; position: relative; }
+.search input {
+  width: 100%; font: inherit; font-size: 14.5px; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px 8px 34px; outline: none;
+}
+.search input:focus-visible { border-color: var(--focus); }
+.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--faint); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: 500 13px/1 "Inter Tight", system-ui, sans-serif; color: var(--muted); background: transparent;
+  border: 1px solid var(--border); border-radius: 999px; padding: 7px 11px; cursor: pointer;
+}
+.chip:hover { color: var(--text); border-color: var(--faint); }
+.chip[aria-pressed="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+.chip-src::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--c); margin-right: 7px; vertical-align: 1px; }
+.chip-src[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: var(--bg); }
+.chip-src[aria-pressed="true"]::before { background: var(--bg); }
+.chip:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.shown { font: 12.5px/1 "JetBrains Mono", monospace; color: var(--faint); margin-left: auto; white-space: nowrap; }
+
+/* Sections and cards */
+.cat { padding: 40px 0 8px; }
+.cat-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; margin-bottom: 18px; }
+.cat-head h2 { font-size: 24px; letter-spacing: -.015em; margin: 0; font-weight: 650; }
+.cat-head p { margin: 0; color: var(--muted); font-size: 14.5px; }
+.count { font: 500 12px/1 "JetBrains Mono", monospace; color: var(--faint); vertical-align: 4px; margin-left: 4px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px; }
+.fx {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 14px;
+  display: flex; flex-direction: column; box-shadow: var(--shadow); min-width: 0;
+}
+.fx header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.fx h3 { margin: 0; font-size: 19px; letter-spacing: -.01em; font-weight: 650; }
+.kind {
+  flex: none; font: 500 11px/1 "JetBrains Mono", monospace; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 4px 6px; background: var(--surface-2);
+}
+.tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 8px 0 10px; }
+.src { --c: var(--faint); font-size: 12.5px; font-weight: 600; color: var(--c); display: inline-flex; align-items: center; gap: 6px; }
+.src::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.src-bliss { --c: var(--bliss); } .src-noise { --c: var(--noise); } .src-sg { --c: var(--sg); } .src-rupture { --c: var(--rupture); }
+.src-note { font-size: 12.5px; color: var(--faint); }
+.desc { margin: 0 0 12px; }
+.fx h4, .fx h5 { font: 500 11px/1 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin: 4px 0 8px; }
+.fx ul { list-style: none; margin: 0; padding: 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px !important; }
+.controls li { font-size: 13px; background: var(--surface-2); border-radius: 6px; padding: 4px 8px; }
+.controls b { font-weight: 600; }
+.controls span { color: var(--muted); }
+.controls span::before { content: "· "; color: var(--faint); }
+.none { margin: 0 0 12px; color: var(--faint); font-size: 13.5px; }
+details { border-top: 1px solid var(--border); margin: 2px 0 10px; }
+summary { cursor: pointer; padding: 10px 0 2px; font-size: 13.5px; font-weight: 600; color: var(--muted); list-style: none; display: flex; align-items: center; gap: 8px; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; font: 500 14px/1 "JetBrains Mono", monospace; width: 14px; color: var(--faint); }
+details[open] summary::before { content: "−"; }
+summary:hover { color: var(--text); }
+.more { padding: 6px 0 0; }
+.more h5 { margin-top: 12px; }
+.more li { font-size: 13.5px; padding: 3px 0; }
+.more li b { font-weight: 600; }
+.more li span { color: var(--muted); }
+.more li span::before { content: "— "; color: var(--faint); }
+.where { margin-top: auto; padding-top: 10px; font-size: 11.5px; color: var(--faint); overflow-wrap: anywhere; }
+
+.empty { display: none; padding: 60px 0; text-align: center; color: var(--muted); }
+.empty.on { display: block; }
+.hidden { display: none !important; }
+
+footer { margin-top: 48px; border-top: 1px solid var(--border); padding: 24px 0 48px; color: var(--muted); font-size: 13.5px; }
+footer p { margin: 0 0 6px; max-width: 760px; }
+.theme { font: inherit; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+.theme:hover { color: var(--text); }
+
+@media (max-width: 640px) {
+  .filters { position: static; } /* it wraps to four rows: too tall to keep on screen */
+  .top { padding-top: 36px; }
+  .lede { font-size: 16px; }
+  .shown { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="wrap">
+    <p class="eyebrow">DMTØR lib</p>
+    <h1>FX</h1>
+    <p class="lede">Every effect in the lib, <b>27 of them</b>: what each one does and what you can turn.
+      They come from <b>NOEMA</b> (the Bliss and Noise editions), <b>Speak &amp; Grain</b> and <b>RUPTURE</b>, and
+      they're all plain C++17 that runs on a phone or a Daisy Seed.</p>
+    <ul class="legend"><li><span class="kind">Send</span> Takes the send and returns only the wet signal; mix it back in.</li><li><span class="kind">In place</span> Replaces the sound with the processed sound.</li><li><span class="kind">Chain</span> Several of the other effects in a fixed order.</li></ul>
+  </div>
+</div>
+
+<nav class="filters" aria-label="Filter the effects">
+  <div class="wrap">
+    <label class="search">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input type="search" id="q" placeholder="Search: shimmer, tape, freeze…" aria-label="Search the effects" autocomplete="off">
+    </label>
+    <div class="chips" role="group" aria-label="Kind of effect"><button class="chip" data-cat="space" aria-pressed="false">Space and time</button><button class="chip" data-cat="glitch" aria-pressed="false">Glitch and pitch</button><button class="chip" data-cat="colour" aria-pressed="false">Colour and distortion</button><button class="chip" data-cat="dynamics" aria-pressed="false">Dynamics</button></div>
+    <div class="chips" role="group" aria-label="Where it comes from"><button class="chip chip-src src-bliss" data-src="bliss" aria-pressed="false">NOEMA Bliss</button><button class="chip chip-src src-noise" data-src="noise" aria-pressed="false">NOEMA Noise</button><button class="chip chip-src src-sg" data-src="sg" aria-pressed="false">Speak &amp; Grain</button><button class="chip chip-src src-rupture" data-src="rupture" aria-pressed="false">RUPTURE</button></div>
+    <span class="shown" id="shown" aria-live="polite"></span>
+  </div>
+</nav>
+
+<main class="wrap">
+<section class="cat" id="space" data-cat="space">
+  <div class="cat-head"><h2>Space and time <span class="count" data-total="11">11</span></h2><p>Reverbs, delays, resonators and clouds: they add room, repeats and memory.</p></div>
+  <div class="grid">
+<article class="fx" data-src="rupture" data-search="space rupture::space the big reverb. four structures built from chaosverb&#x27;s reverb, a pre-delay of up to 2.5 s with its own feedback so it echoes into the wash, and an element after the tail. shimmer, gate, freeze and chaos sit on top, and the tail can duck under what you play. it follows a clock, and changing structure crossfades. rupture structure ultra, cathedral, prism or gravity decay  tone dark to bright pre-delay 0 to 2.5 s pre-delay feedback up to 70 % element the shimmer&#x27;s interval, or an effect after the tail shimmer the tail pitched and fed back gate a tempo gate on the tail freeze the tail holds forever chaos rhythmic gating and frozen stabs duck the tail dips under the dry signal ultra a plate (dattorro&#x27;s tank): dense, moody, toward endless cathedral a large 8-line hall with slow, deep modulation prism two halls, one per side, pitched −12 on the left and +7 on the right gravity the hall played backwards through a window, so the tail swells toward the next hit shimmer +12, +7, −12 the interval the shimmer moves by chorus two slow voices vibrato in eighth notes vowel formant filters through a, e, i, o, u tremolo in eighth notes lo-fi tape wow, then bits and rate lost">
+  <header>
+    <h3>Space</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-rupture">RUPTURE</span></div>
+  <p class="desc">The big reverb. Four structures built from ChaosVerb&#x27;s reverb, a pre-delay of up to 2.5 s with its own feedback so it echoes into the wash, and an element after the tail. Shimmer, Gate, Freeze and Chaos sit on top, and the tail can duck under what you play. It follows a clock, and changing structure crossfades.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Structure</b> <span>Ultra, Cathedral, Prism or Gravity</span></li><li><b>Decay</b></li><li><b>Tone</b> <span>dark to bright</span></li><li><b>Pre-delay</b> <span>0 to 2.5 s</span></li><li><b>Pre-delay feedback</b> <span>up to 70 %</span></li><li><b>Element</b> <span>the shimmer&#x27;s interval, or an effect after the tail</span></li><li><b>Shimmer</b> <span>the tail pitched and fed back</span></li><li><b>Gate</b> <span>a tempo gate on the tail</span></li><li><b>Freeze</b> <span>the tail holds forever</span></li><li><b>Chaos</b> <span>rhythmic gating and frozen stabs</span></li><li><b>Duck</b> <span>the tail dips under the dry signal</span></li></ul>
+  <details><summary>Structures, types and elements</summary><div class="more"><h5>Structures</h5><ul><li><b>Ultra</b> <span>a plate (Dattorro&#x27;s tank): dense, moody, toward endless</span></li><li><b>Cathedral</b> <span>a large 8-line hall with slow, deep modulation</span></li><li><b>Prism</b> <span>two halls, one per side, pitched −12 on the left and +7 on the right</span></li><li><b>Gravity</b> <span>the hall played backwards through a window, so the tail swells toward the next hit</span></li></ul><h5>Elements</h5><ul><li><b>Shimmer +12, +7, −12</b> <span>the interval the shimmer moves by</span></li><li><b>Chorus</b> <span>two slow voices</span></li><li><b>Vibrato</b> <span>in eighth notes</span></li><li><b>Vowel</b> <span>formant filters through a, e, i, o, u</span></li><li><b>Tremolo</b> <span>in eighth notes</span></li><li><b>Lo-Fi</b> <span>tape wow, then bits and rate lost</span></li></ul></div></details>
+  <code class="where">rupture::Space · audio/fx/rupture/Space.h</code>
+</article>
+<article class="fx" data-src="rupture" data-search="echo rupture::echo the big delay. two lines of up to 2.7 s in six structures, a type that runs from clean digital through bbd to tape, routing from parallel to ping-pong, and an element inside the feedback loop that compounds with every repeat. feedback goes past 100 %, held back by saturation and a guard. the time glides when changed, bending the pitch like tape, and the whole thing follows a clock. rupture time up to 2.7 s structure six, below type digital → bbd → tape routing parallel → series → ping-pong feedback 0 to 110 % element six, below, inside the loop depth the element&#x27;s amount and the depth of a one-bar lfo on the time chaos on a beat the time jumps (half, double, dotted) and glides back freeze the loop repeats forever, no new input standard two lines side by side multitap four taps multi filter the four taps through their own band-pass filters, panned apart poly the second line at 3:2, 4:3 or 5:4 of the first reverse every repeat backwards series one line feeds the other digital clean bbd dark and companded, with clock noise tape wow, flutter, darkening, saturation, hiss and dropouts pitch each repeat down an octave, up a fifth or up an octave granulize the repeats break into grains crush each repeat loses bits and rate filter a band-pass swept by the lfo, for dub throws diffuse the repeats blur toward a reverb cassette saturation, a darker top and more wow">
+  <header>
+    <h3>Echo</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-rupture">RUPTURE</span></div>
+  <p class="desc">The big delay. Two lines of up to 2.7 s in six structures, a type that runs from clean digital through BBD to tape, routing from parallel to ping-pong, and an element inside the feedback loop that compounds with every repeat. Feedback goes past 100 %, held back by saturation and a guard. The time glides when changed, bending the pitch like tape, and the whole thing follows a clock.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Time</b> <span>up to 2.7 s</span></li><li><b>Structure</b> <span>six, below</span></li><li><b>Type</b> <span>digital → BBD → tape</span></li><li><b>Routing</b> <span>parallel → series → ping-pong</span></li><li><b>Feedback</b> <span>0 to 110 %</span></li><li><b>Element</b> <span>six, below, inside the loop</span></li><li><b>Depth</b> <span>the element&#x27;s amount and the depth of a one-bar LFO on the time</span></li><li><b>Chaos</b> <span>on a beat the time jumps (half, double, dotted) and glides back</span></li><li><b>Freeze</b> <span>the loop repeats forever, no new input</span></li></ul>
+  <details><summary>Structures, types and elements</summary><div class="more"><h5>Structures</h5><ul><li><b>Standard</b> <span>two lines side by side</span></li><li><b>Multitap</b> <span>four taps</span></li><li><b>Multi Filter</b> <span>the four taps through their own band-pass filters, panned apart</span></li><li><b>Poly</b> <span>the second line at 3:2, 4:3 or 5:4 of the first</span></li><li><b>Reverse</b> <span>every repeat backwards</span></li><li><b>Series</b> <span>one line feeds the other</span></li></ul><h5>Types</h5><ul><li><b>Digital</b> <span>clean</span></li><li><b>BBD</b> <span>dark and companded, with clock noise</span></li><li><b>Tape</b> <span>wow, flutter, darkening, saturation, hiss and dropouts</span></li></ul><h5>Elements</h5><ul><li><b>Pitch</b> <span>each repeat down an octave, up a fifth or up an octave</span></li><li><b>Granulize</b> <span>the repeats break into grains</span></li><li><b>Crush</b> <span>each repeat loses bits and rate</span></li><li><b>Filter</b> <span>a band-pass swept by the LFO, for dub throws</span></li><li><b>Diffuse</b> <span>the repeats blur toward a reverb</span></li><li><b>Cassette</b> <span>saturation, a darker top and more wow</span></li></ul></div></details>
+  <code class="where">rupture::Echo · audio/fx/rupture/Echo.h</code>
+</article>
+<article class="fx" data-src="rupture" data-search="chaosverb reverb chaosverb::reverb the reverb space is built from, usable on its own: a bright, dense plate, an 8-line hall with slow, deep modulation, or the hall with a shimmer in its feedback. in front of it are a pre-delay synced to the beat, with tape wobble, and a 150 hz low cut. switching between plate and hall crossfades. rupture size a short room to near-infinite tone dark to bright type plate, hall or shimmer chaos a rhythmic gate on the tail and occasional frozen stabs freeze endless, no new input duck depth how far the tail dips under the dry signal">
+  <header>
+    <h3>ChaosVerb Reverb</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-rupture">RUPTURE</span><span class="src-note">from the ChaosVerb pedal</span></div>
+  <p class="desc">The reverb Space is built from, usable on its own: a bright, dense plate, an 8-line hall with slow, deep modulation, or the hall with a shimmer in its feedback. In front of it are a pre-delay synced to the beat, with tape wobble, and a 150 Hz low cut. Switching between plate and hall crossfades.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Size</b> <span>a short room to near-infinite</span></li><li><b>Tone</b> <span>dark to bright</span></li><li><b>Type</b> <span>plate, hall or shimmer</span></li><li><b>Chaos</b> <span>a rhythmic gate on the tail and occasional frozen stabs</span></li><li><b>Freeze</b> <span>endless, no new input</span></li><li><b>Duck depth</b> <span>how far the tail dips under the dry signal</span></li></ul>
+  
+  <code class="where">chaosverb::Reverb · audio/core/rupture/dsp/Reverb.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="reverb noema::reverb an 8-line feedback delay network with input diffusion and lush modulation on every line. a shimmer pitches the tail up an octave or a fifth and feeds it back, and it can freeze. noema bliss size  damping 1 is dark freeze endless shimmer how much pitched tail returns interval an octave or a fifth modulation how lush pre-delay up to 0.25 s">
+  <header>
+    <h3>Reverb</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">An 8-line feedback delay network with input diffusion and lush modulation on every line. A shimmer pitches the tail up an octave or a fifth and feeds it back, and it can freeze.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Size</b></li><li><b>Damping</b> <span>1 is dark</span></li><li><b>Freeze</b> <span>endless</span></li><li><b>Shimmer</b> <span>how much pitched tail returns</span></li><li><b>Interval</b> <span>an octave or a fifth</span></li><li><b>Modulation</b> <span>how lush</span></li><li><b>Pre-delay</b> <span>up to 0.25 s</span></li></ul>
+  
+  <code class="where">noema::Reverb · audio/fx/noema-bliss/Reverb.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="reverb noema::noise::reverb the plain version of the bliss reverb: the same network, without the shimmer. noema noise size  damping  freeze ">
+  <header>
+    <h3>Reverb</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">The plain version of the Bliss reverb: the same network, without the shimmer.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Size</b></li><li><b>Damping</b></li><li><b>Freeze</b></li></ul>
+  
+  <code class="where">noema::noise::Reverb · audio/fx/noema-noise/Reverb.h</code>
+</article>
+<article class="fx" data-src="sg" data-search="reverb speakgrain::reverb a long, smooth reverb: four input allpasses into an 8-line network with a householder matrix, its lines modulated and damped. speak &amp; grain decay in seconds">
+  <header>
+    <h3>Reverb</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-sg">Speak &amp; Grain</span></div>
+  <p class="desc">A long, smooth reverb: four input allpasses into an 8-line network with a Householder matrix, its lines modulated and damped.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Decay</b> <span>in seconds</span></li></ul>
+  
+  <code class="where">speakgrain::Reverb · audio/fx/speakgrain/Reverb.h</code>
+</article>
+<article class="fx" data-src="bliss noise" data-search="delay noema::delay a tape-style stereo delay. clean with degrade at 0; above that it adds wow, flutter, darkening, hiss and dropouts. noema bliss noema noise time up to about 2.7 s feedback  degrade clean → worn tape spread bliss: a mono echo to ping-pong tone bliss: darker or thinner freeze bliss: holds the repeats">
+  <header>
+    <h3>Delay</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A tape-style stereo delay. Clean with Degrade at 0; above that it adds wow, flutter, darkening, hiss and dropouts.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Time</b> <span>up to about 2.7 s</span></li><li><b>Feedback</b></li><li><b>Degrade</b> <span>clean → worn tape</span></li><li><b>Spread</b> <span>Bliss: a mono echo to ping-pong</span></li><li><b>Tone</b> <span>Bliss: darker or thinner</span></li><li><b>Freeze</b> <span>Bliss: holds the repeats</span></li></ul>
+  
+  <code class="where">noema::Delay · audio/fx/noema-bliss/Delay.h</code>
+</article>
+<article class="fx" data-src="sg" data-search="delay speakgrain::delay a stereo ping-pong delay with fixed timing; each echo is darker than the last. speak &amp; grain">
+  <header>
+    <h3>Delay</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-sg">Speak &amp; Grain</span></div>
+  <p class="desc">A stereo ping-pong delay with fixed timing; each echo is darker than the last.</p>
+  <p class="none">No controls: a fixed design.</p>
+  
+  <code class="where">speakgrain::Delay · audio/fx/speakgrain/Delay.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="interference noema::interference a singing tape-loop resonator: a multi-tap delay loop with a resonant filter and saturation inside, modulated by its own level. it swells but never howls. noema&#x27;s engine c. noema bliss feedback stays under unity time 20 ms to 1.3 s resonance  dirt  tone the filter&#x27;s centre self-mod  excite a momentary push drone a pitch for it to sing at air ">
+  <header>
+    <h3>Interference</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A singing tape-loop resonator: a multi-tap delay loop with a resonant filter and saturation inside, modulated by its own level. It swells but never howls. NOEMA&#x27;s engine C.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Feedback</b> <span>stays under unity</span></li><li><b>Time</b> <span>20 ms to 1.3 s</span></li><li><b>Resonance</b></li><li><b>Dirt</b></li><li><b>Tone</b> <span>the filter&#x27;s centre</span></li><li><b>Self-mod</b></li><li><b>Excite</b> <span>a momentary push</span></li><li><b>Drone</b> <span>a pitch for it to sing at</span></li><li><b>Air</b></li></ul>
+  
+  <code class="where">noema::Interference · audio/fx/noema-bliss/Interference.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="interference noema::noise::interference the screaming version: the loop is allowed to howl, right up to unity. noema noise feedback howls past about 0.85 time 20 ms to 1.3 s resonance  dirt  tone  self-mod  excite  drone ">
+  <header>
+    <h3>Interference</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">The screaming version: the loop is allowed to howl, right up to unity.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Feedback</b> <span>howls past about 0.85</span></li><li><b>Time</b> <span>20 ms to 1.3 s</span></li><li><b>Resonance</b></li><li><b>Dirt</b></li><li><b>Tone</b></li><li><b>Self-mod</b></li><li><b>Excite</b></li><li><b>Drone</b></li></ul>
+  
+  <code class="where">noema::noise::Interference · audio/fx/noema-noise/Interference.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="cloud noema::cloud a granular cloud. it sprays the last few seconds back as soft grains: delayed, scattered, pitched up, sometimes reversed. freeze holds its memory. echo&#x27;s granulize element is this cloud. noema bliss density about 1.5 to 60 grains a second size about 20 ms to 1.6 s scatter up to about 3.5 s back pitch how high grains climb up chance  reverse  spread  sweep  freeze ">
+  <header>
+    <h3>Cloud</h3>
+    <span class="kind" title="Takes the send and returns only the wet signal; mix it back in.">Send</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A granular cloud. It sprays the last few seconds back as soft grains: delayed, scattered, pitched up, sometimes reversed. Freeze holds its memory. Echo&#x27;s Granulize element is this cloud.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Density</b> <span>about 1.5 to 60 grains a second</span></li><li><b>Size</b> <span>about 20 ms to 1.6 s</span></li><li><b>Scatter</b> <span>up to about 3.5 s back</span></li><li><b>Pitch</b> <span>how high grains climb</span></li><li><b>Up chance</b></li><li><b>Reverse</b></li><li><b>Spread</b></li><li><b>Sweep</b></li><li><b>Freeze</b></li></ul>
+  
+  <code class="where">noema::Cloud · audio/fx/noema-bliss/Cloud.h</code>
+</article>
+  </div>
+</section>
+<section class="cat" id="glitch" data-cat="glitch">
+  <div class="cat-head"><h2>Glitch and pitch <span class="count" data-total="6">6</span></h2><p>They catch the last moment and replay it: looped, slowed, sped up or bent in pitch.</p></div>
+  <div class="grid">
+<article class="fx" data-src="bliss" data-search="glitch noema::glitch catches a slice of the last moment and loops it: a stutter, or a buzz when the slice is tiny. forward or reversed, at the same speed or faster, with long, soft crossfades. noema bliss slice how much of the last moment speed 1 or faster reverse  hold how long it loops amount how much the loop replaces the sound">
+  <header>
+    <h3>Glitch</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">Catches a slice of the last moment and loops it: a stutter, or a buzz when the slice is tiny. Forward or reversed, at the same speed or faster, with long, soft crossfades.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Slice</b> <span>how much of the last moment</span></li><li><b>Speed</b> <span>1 or faster</span></li><li><b>Reverse</b></li><li><b>Hold</b> <span>how long it loops</span></li><li><b>Amount</b> <span>how much the loop replaces the sound</span></li></ul>
+  
+  <code class="where">noema::Glitch · audio/fx/noema-bliss/Glitch.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="glitch noema::noise::glitch the same idea, harder; the slice can also play slower than it was. noema noise amount loops while it&#x27;s up slice 4 ms to 1.2 s rate 1 as it was, below 1 slower">
+  <header>
+    <h3>Glitch</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">The same idea, harder; the slice can also play slower than it was.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b> <span>loops while it&#x27;s up</span></li><li><b>Slice</b> <span>4 ms to 1.2 s</span></li><li><b>Rate</b> <span>1 as it was, below 1 slower</span></li></ul>
+  
+  <code class="where">noema::noise::Glitch · audio/fx/noema-noise/Glitch.h</code>
+</article>
+<article class="fx" data-src="sg" data-search="glitch speakgrain::glitch random stutters: slices of 25 to 180 ms, repeated, sometimes backwards, at half speed or bit-crushed. speak &amp; grain amount how often, how many repeats and how wild crush on or off">
+  <header>
+    <h3>Glitch</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-sg">Speak &amp; Grain</span></div>
+  <p class="desc">Random stutters: slices of 25 to 180 ms, repeated, sometimes backwards, at half speed or bit-crushed.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b> <span>how often, how many repeats and how wild</span></li><li><b>Crush</b> <span>on or off</span></li></ul>
+  
+  <code class="where">speakgrain::Glitch · audio/fx/speakgrain/Glitch.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="sink noema::noise::sink the playback falls behind and slows down like a tape machine losing power, then spins back up to the present when let go. noema noise amount sinks while it&#x27;s up depth down to 1/8 speed time how long it takes">
+  <header>
+    <h3>Sink</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">The playback falls behind and slows down like a tape machine losing power, then spins back up to the present when let go.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b> <span>sinks while it&#x27;s up</span></li><li><b>Depth</b> <span>down to 1/8 speed</span></li><li><b>Time</b> <span>how long it takes</span></li></ul>
+  
+  <code class="where">noema::noise::Sink · audio/fx/noema-noise/Sink.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="mangle (drift) noema::mangle a two-head pitch shifter that glides up by as much as an octave and a bit while held, then spins back down. noema bliss rise hold it up, let go to fall octaves up to about 1.2 rise time ">
+  <header>
+    <h3>Mangle (DRIFT)</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A two-head pitch shifter that glides up by as much as an octave and a bit while held, then spins back down.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Rise</b> <span>hold it up, let go to fall</span></li><li><b>Octaves</b> <span>up to about 1.2</span></li><li><b>Rise time</b></li></ul>
+  
+  <code class="where">noema::Mangle · audio/fx/noema-bliss/Mangle.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="mangle noema::noise::mangle glitch and sink side by side, as the noise synth uses them. noema noise glitch amount, slice, rate sink amount, depth, time">
+  <header>
+    <h3>Mangle</h3>
+    <span class="kind" title="Several of the other effects in a fixed order.">Chain</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">Glitch and Sink side by side, as the Noise synth uses them.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Glitch</b> <span>amount, slice, rate</span></li><li><b>Sink</b> <span>amount, depth, time</span></li></ul>
+  
+  <code class="where">noema::noise::Mangle · audio/fx/noema-noise/Mangle.h</code>
+</article>
+  </div>
+</section>
+<section class="cat" id="colour" data-cat="colour">
+  <div class="cat-head"><h2>Colour and distortion <span class="count" data-total="9">9</span></h2><p>Saturation, noise, fuzz and crushing, from a gentle warmth to destruction.</p></div>
+  <div class="grid">
+<article class="fx" data-src="bliss" data-search="glow noema::glow a master colour stage: tape warmth, wow, hiss and a breathing, sidechain-style pulse that can lock to a beat. noema bliss warmth  wow  hiss  pulse how deep the breathing duck is pulse rate or restarted on each beat">
+  <header>
+    <h3>Glow</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A master colour stage: tape warmth, wow, hiss and a breathing, sidechain-style pulse that can lock to a beat.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Warmth</b></li><li><b>Wow</b></li><li><b>Hiss</b></li><li><b>Pulse</b> <span>how deep the breathing duck is</span></li><li><b>Pulse rate</b> <span>or restarted on each beat</span></li></ul>
+  
+  <code class="where">noema::Glow · audio/fx/noema-bliss/Glow.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="warmth noema::warmth gentle saturation and a rounder top, level-matched. noema bliss amount ">
+  <header>
+    <h3>Warmth</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">Gentle saturation and a rounder top, level-matched.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::Warmth · audio/fx/noema-bliss/Warmth.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="air noema::air a breath of filtered noise that rides the sound&#x27;s loudness. noema bliss amount ">
+  <header>
+    <h3>Air</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A breath of filtered noise that rides the sound&#x27;s loudness.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::Air · audio/fx/noema-bliss/Air.h</code>
+</article>
+<article class="fx" data-src="bliss" data-search="chorus noema::chorus a wide, two-voice stereo ensemble. noema bliss amount ">
+  <header>
+    <h3>Chorus</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span></div>
+  <p class="desc">A wide, two-voice stereo ensemble.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::Chorus · audio/fx/noema-bliss/Chorus.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="distortion noema::noise::distortion fuzz that turns gated and rectified as it rises, with a tone filter after it, level-matched. noema noise amount ">
+  <header>
+    <h3>Distortion</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">Fuzz that turns gated and rectified as it rises, with a tone filter after it, level-matched.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::noise::Distortion · audio/fx/noema-noise/Distortion.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="static noema::noise::static static, hiss and crackle that ride the sound&#x27;s loudness. noema noise amount ">
+  <header>
+    <h3>Static</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">Static, hiss and crackle that ride the sound&#x27;s loudness.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::noise::Static · audio/fx/noema-noise/Static.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="crush noema::noise::crush bit reduction (12 bits down to 3) and sample-rate reduction, faded in so it never clicks. echo&#x27;s crush element and space&#x27;s lo-fi use it. noema noise amount ">
+  <header>
+    <h3>Crush</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">Bit reduction (12 bits down to 3) and sample-rate reduction, faded in so it never clicks. Echo&#x27;s Crush element and Space&#x27;s Lo-Fi use it.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Amount</b></li></ul>
+  
+  <code class="where">noema::noise::Crush · audio/fx/noema-noise/Crush.h</code>
+</article>
+<article class="fx" data-src="noise" data-search="filth noema::noise::filth a destruction stage: a rectifier (octave fuzz), asymmetric fuzz into a hard clip, a wavefolder, a bit crusher and a decimator, then a tone filter. noema noise drive 0 bypasses it all fold  crush  rectify ">
+  <header>
+    <h3>Filth</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A destruction stage: a rectifier (octave fuzz), asymmetric fuzz into a hard clip, a wavefolder, a bit crusher and a decimator, then a tone filter.</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Drive</b> <span>0 bypasses it all</span></li><li><b>Fold</b></li><li><b>Crush</b></li><li><b>Rectify</b></li></ul>
+  
+  <code class="where">noema::noise::Filth · audio/fx/noema-noise/Filth.h</code>
+</article>
+<article class="fx" data-src="bliss noise" data-search="keyfx noema::keyfx the pad chain the synths use: warmth → air → chorus (bliss), or distortion → static → crush (noise). noema bliss noema noise bliss air, warmth, chorus noise noise, distortion, crush">
+  <header>
+    <h3>KeyFx</h3>
+    <span class="kind" title="Several of the other effects in a fixed order.">Chain</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">The pad chain the synths use: Warmth → Air → Chorus (Bliss), or Distortion → Static → Crush (Noise).</p>
+  <h4>Controls</h4><ul class="controls"><li><b>Bliss</b> <span>air, warmth, chorus</span></li><li><b>Noise</b> <span>noise, distortion, crush</span></li></ul>
+  
+  <code class="where">noema::KeyFx · audio/fx/noema-bliss/KeyFx.h</code>
+</article>
+  </div>
+</section>
+<section class="cat" id="dynamics" data-cat="dynamics">
+  <div class="cat-head"><h2>Dynamics <span class="count" data-total="1">1</span></h2><p>Keeping the level safe.</p></div>
+  <div class="grid">
+<article class="fx" data-src="bliss noise" data-search="limiter noema::limiter a stereo-linked lookahead peak limiter, then a soft safety clip. it reports its gain reduction for a meter. noema bliss noema noise">
+  <header>
+    <h3>Limiter</h3>
+    <span class="kind" title="Replaces the sound with the processed sound.">In place</span>
+  </header>
+  <div class="tags"><span class="src src-bliss">NOEMA Bliss</span><span class="src src-noise">NOEMA Noise</span></div>
+  <p class="desc">A stereo-linked lookahead peak limiter, then a soft safety clip. It reports its gain reduction for a meter.</p>
+  <p class="none">No controls: it just works.</p>
+  
+  <code class="where">noema::Limiter · audio/fx/noema-bliss/Limiter.h</code>
+</article>
+  </div>
+</section>
+<p class="empty" id="empty">No effect matches that. <button class="theme" id="reset">Clear the filters</button></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Each effect is a C++ class in <a href="https://github.com/DMTOR-DSP/dmtor-lib">DMTOR-DSP/dmtor-lib</a> (private),
+      named at the bottom of its card. The lib's README has the exact calls and ranges, and notes on running them on a Daisy.</p>
+    <p><button class="theme" id="theme">Switch to <span id="theme-name">dark</span></button></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var q = document.getElementById('q');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.fx'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.cat'));
+  var catChips = Array.prototype.slice.call(document.querySelectorAll('.chip[data-cat]'));
+  var srcChips = Array.prototype.slice.call(document.querySelectorAll('.chip[data-src]'));
+  var shown = document.getElementById('shown');
+  var empty = document.getElementById('empty');
+  var cat = null, src = null;
+
+  function apply() {
+    var words = q.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    var total = 0;
+    sections.forEach(function (s) {
+      var n = 0;
+      var inCat = !cat || s.dataset.cat === cat;
+      s.querySelectorAll('.fx').forEach(function (c) {
+        var ok = inCat && (!src || c.dataset.src.split(' ').indexOf(src) >= 0) &&
+          words.every(function (w) { return c.dataset.search.indexOf(w) >= 0; });
+        c.classList.toggle('hidden', !ok);
+        if (ok) n++;
+      });
+      s.classList.toggle('hidden', n === 0);
+      s.querySelector('.count').textContent = n;
+      total += n;
+    });
+    shown.textContent = total === cards.length ? cards.length + ' effects' : total + ' of ' + cards.length;
+    empty.classList.toggle('on', total === 0);
+  }
+  function toggle(chips, chip, key) {
+    var on = chip.getAttribute('aria-pressed') !== 'true';
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+    return on ? chip.dataset[key] : null;
+  }
+  catChips.forEach(function (c) { c.addEventListener('click', function () { cat = toggle(catChips, c, 'cat'); apply(); }); });
+  srcChips.forEach(function (c) { c.addEventListener('click', function () { src = toggle(srcChips, c, 'src'); apply(); }); });
+  q.addEventListener('input', apply);
+  document.getElementById('reset').addEventListener('click', function () {
+    q.value = ''; cat = src = null;
+    catChips.concat(srcChips).forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    apply();
+  });
+
+  // Light or dark: follows the system until switched, then remembers.
+  var root = document.documentElement, name = document.getElementById('theme-name');
+  function current() {
+    return root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  function label() { name.textContent = current() === 'dark' ? 'light' : 'dark'; }
+  try { var saved = localStorage.getItem('dmtor-fx-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+  label();
+  document.getElementById('theme').addEventListener('click', function () {
+    root.dataset.theme = current() === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('dmtor-fx-theme', root.dataset.theme); } catch (e) {}
+    label();
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label);
+  apply();
+})();
+</script>
+</body>
+</html>
